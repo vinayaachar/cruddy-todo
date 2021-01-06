@@ -16,7 +16,7 @@ exports.create = (text, callback) => {
     if (err) {
       throw ('could not create');
     } else {
-      var fileName = `${exports.dataDir}/${id}.txt`;
+      let fileName = `${exports.dataDir}/${id}.txt`;
       fs.writeFile(fileName, text, (err) => {
         if (err) {
           throw ('error writing to dataDir');
@@ -29,10 +29,17 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+  fs.readdir(exports.dataDir, (err, files) => {
+    if (err) {
+      throw ('error reading dataDir');
+    } else {
+      let idArray = files.map((fileName) => {
+        let removed = fileName.replace('.txt', '');
+        return ({id: removed, text: removed});
+      });
+      callback(null, idArray);
+    }
   });
-  callback(null, data);
 };
 
 exports.readOne = (id, callback) => {

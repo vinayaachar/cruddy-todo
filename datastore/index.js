@@ -8,10 +8,6 @@ var items = {};
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
-  // var id = counter.getNextUniqueId();
-  // console.log('IDDDD', id);
-  // items[id] = text;
-
   counter.getNextUniqueId((err, id) => {
     if (err) {
       throw ('could not create');
@@ -43,12 +39,14 @@ exports.readAll = (callback) => {
 };
 
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  let fileName = `${exports.dataDir}/${id}.txt`;
+  fs.readFile(fileName, 'utf8', (err, data) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      callback(null, { id, text: data });
+    }
+  });
 };
 
 exports.update = (id, text, callback) => {
